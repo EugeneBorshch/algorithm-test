@@ -1,7 +1,5 @@
 package main.java.com.eugeneborshch.algorithm.sorting;
 
-import com.sun.xml.internal.fastinfoset.algorithm.BooleanEncodingAlgorithm;
-
 import java.util.Arrays;
 
 /**
@@ -12,6 +10,9 @@ import java.util.Arrays;
 public class MergeSort implements Sort {
 
     public int[] sort(int[] source) {
+        if (source == null) {
+            return null;
+        }
 
         if (source.length <= 1) {
             return source;
