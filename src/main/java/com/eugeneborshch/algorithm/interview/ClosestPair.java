@@ -26,7 +26,98 @@ public class ClosestPair {
             }
         });
 
+
         return "";
+    }
+
+
+    private double getClosest(Point[] sortedByX, Point[] sortedByY) {
+
+        if (sortedByX.length == 1) {
+            return Double.MAX_VALUE;
+        }
+
+        if (sortedByX.length <= 3) {
+            return calculateClosestBruteForce(sortedByX);
+        }
+
+        int midPoint = sortedByX.length / 2;
+        Point[] leftSubArray = Arrays.copyOfRange(sortedByX, 0, midPoint);
+        Point[] rightSubArray = Arrays.copyOfRange(sortedByX, midPoint, sortedByX.length);
+
+        return calculateCrossClosest(getClosest(leftSubArray, sortedByY), getClosest(rightSubArray, sortedByY), leftSubArray, rightSubArray, sortedByY);
+
+    }
+
+    private double calculateCrossClosest(double closestLeft, double closestRight, Point[] leftSubArray, Point[] rightSubArray, Point[] sortedByY) {
+
+        double deltaX = Math.min(closestLeft, closestRight);
+
+        //Points that belongs to strip:    Xmin-Delta <= Px < Xmin+Delta
+        Point midPoint = leftSubArray[leftSubArray.length - 1];//as left sub-array is sorted we can take the last one
+
+        int leftBoundIndx = -1;
+        for (int i = 0; i < leftSubArray.length; i++) {
+            if (leftSubArray[i].getX() >= midPoint.getX() - deltaX) {
+                leftBoundIndx = i;
+                break;
+            }
+        }
+
+
+        int rightBoundIndx = -1;
+        for (int i = 0; i < rightSubArray.length; i++) {
+            if (rightSubArray[i].getX() <= deltaX + midPoint.getX()) {
+                rightBoundIndx = i;
+                break;
+            }
+        }
+
+        /*
+         * If no points from left or right sub-arrays doesn't belong to the strip described above then we have a
+         * best case when closest pair lies in left or right subsets.
+         *
+         */
+        if (rightBoundIndx == -1 || leftBoundIndx == -1) {
+            return deltaX;
+        }
+
+        /*
+        *  Otherwise there is possibility that closest pair is formed by one point in the left and one point in the right subsets.
+        */
+
+        int leftStripLength = leftSubArray.length - leftBoundIndx;
+        int rightStripLength = rightBoundIndx;
+        int k = 0;
+        Point[] sortedByYStrip = new Point[leftStripLength + rightStripLength];
+        for (int i = leftStripLength; i < leftSubArray.length; i++) {
+            sortedByYStrip[k] = leftSubArray[i];
+            k++;
+        }
+
+        for (int i = 0; i < rightSubArray.length; i++) {
+            sortedByYStrip[k] = rightSubArray[i];
+            k++;
+        }
+
+
+    }
+
+
+    private double calculateClosestBruteForce(Point[] sortedByX) {
+        double minDistance = Double.MAX_VALUE;
+        for (int i = 0; i < sortedByX.length; i++) {
+            for (int j = 1; j < sortedByX.length; j++) {
+                double distance = getDistance(sortedByX[i], sortedByX[j]);
+                minDistance = Math.min(distance, minDistance);
+            }
+        }
+        return minDistance;
+    }
+
+    private double getDistance(Point pointOne, Point pointTwo) {
+        return Math.sqrt(Math.pow(pointTwo.getX() - pointOne.getX(), 2) + Math.pow(pointTwo.getY() - pointOne.getY(), 2));
+
     }
 
 
