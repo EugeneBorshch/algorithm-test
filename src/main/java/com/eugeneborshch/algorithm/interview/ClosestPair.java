@@ -11,6 +11,8 @@ import java.util.Arrays;
 public class ClosestPair {
 
 
+    private String closest;
+
     public String getClosestPair(Point[] sourcePoints) {
 
         Point[] sortedByX = new MergePointsSort().sort(sourcePoints, new Rule() {
@@ -19,19 +21,12 @@ public class ClosestPair {
             }
         });
 
-
-        Point[] sortedByY = new MergePointsSort().sort(sourcePoints, new Rule() {
-            public int getPointValue(Point point) {
-                return point.getY();
-            }
-        });
-
-
-        return "";
+        double minDistance = getClosest(sortedByX);
+        return closest + "  distance : " + minDistance;
     }
 
 
-    private double getClosest(Point[] sortedByX, Point[] sortedByY) {
+    private double getClosest(Point[] sortedByX) {
 
         if (sortedByX.length == 1) {
             return Double.MAX_VALUE;
@@ -45,11 +40,11 @@ public class ClosestPair {
         Point[] leftSubArray = Arrays.copyOfRange(sortedByX, 0, midPoint);
         Point[] rightSubArray = Arrays.copyOfRange(sortedByX, midPoint, sortedByX.length);
 
-        return calculateCrossClosest(getClosest(leftSubArray, sortedByY), getClosest(rightSubArray, sortedByY), leftSubArray, rightSubArray, sortedByY);
+        return calculateCrossClosest(getClosest(leftSubArray), getClosest(rightSubArray), leftSubArray, rightSubArray);
 
     }
 
-    private double calculateCrossClosest(double closestLeft, double closestRight, Point[] leftSubArray, Point[] rightSubArray, Point[] sortedByY) {
+    private double calculateCrossClosest(double closestLeft, double closestRight, Point[] leftSubArray, Point[] rightSubArray) {
 
         double deltaX = Math.min(closestLeft, closestRight);
 
@@ -87,19 +82,45 @@ public class ClosestPair {
         */
 
         int leftStripLength = leftSubArray.length - leftBoundIndx;
-        int rightStripLength = rightBoundIndx;
+        int rightStripLength = rightBoundIndx + 1;
         int k = 0;
+
+        //Lets fill the strip with points Xmin-Delta <= Px < Xmin+Delta
         Point[] sortedByYStrip = new Point[leftStripLength + rightStripLength];
-        for (int i = leftStripLength; i < leftSubArray.length; i++) {
+
+        for (int i = leftSubArray.length - 1; i >= leftSubArray.length - leftStripLength; i--) {
             sortedByYStrip[k] = leftSubArray[i];
             k++;
         }
 
-        for (int i = 0; i < rightSubArray.length; i++) {
+        for (int i = 0; i < rightStripLength; i++) {
             sortedByYStrip[k] = rightSubArray[i];
             k++;
         }
 
+
+        //Sort the points in the strip by Y coordinate
+
+        sortedByYStrip = new MergePointsSort().sort(sortedByYStrip, new Rule() {
+            public int getPointValue(Point point) {
+                return point.getY();
+            }
+        });
+
+        for (int i = 0; i < sortedByYStrip.length; i++) {
+            int j = i + 1;
+            while (j - i <= 6 && j < sortedByYStrip.length) {
+
+                double distance = getDistance(sortedByYStrip[i], sortedByYStrip[j]);
+                if (distance < deltaX) {
+                    deltaX = distance;
+                    closest = sortedByYStrip[i] + " - " + sortedByYStrip[j];
+                }
+
+                j++;
+            }
+        }
+        return deltaX;
 
     }
 
@@ -108,8 +129,14 @@ public class ClosestPair {
         double minDistance = Double.MAX_VALUE;
         for (int i = 0; i < sortedByX.length; i++) {
             for (int j = 1; j < sortedByX.length; j++) {
-                double distance = getDistance(sortedByX[i], sortedByX[j]);
-                minDistance = Math.min(distance, minDistance);
+                //we don't want to calculate distance between the same point
+                if (i != j) {
+                    double distance = getDistance(sortedByX[i], sortedByX[j]);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closest = sortedByX[i] + " - " + sortedByX[j];
+                    }
+                }
             }
         }
         return minDistance;
@@ -168,7 +195,7 @@ public class ClosestPair {
                     i++;
                     k++;
                 } else if (i >= leftSubArray.length && j < rightSubArray.length) {
-                    mergedArray[k] = rightSubArray[i];
+                    mergedArray[k] = rightSubArray[j];
                     j++;
                     k++;
                 }
