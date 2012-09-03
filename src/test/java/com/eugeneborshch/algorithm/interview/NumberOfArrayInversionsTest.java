@@ -1,10 +1,11 @@
 package test.java.com.eugeneborshch.algorithm.interview;
 
 import main.java.com.eugeneborshch.algorithm.interview.NumberOfArrayInversions;
-
-import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
+
 import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Test NumberOfArrayInversions implementation
@@ -15,9 +16,9 @@ public class NumberOfArrayInversionsTest {
 
     @Test
     public void testInversions() {
-        int[] source = new int[]{1, 3, 8, 5, 7, 2, 4, 6};
+        int[] source = new int[]{1, 4, 2, 3};
         List<String> inversions = new NumberOfArrayInversions().getInversions(source);
-        assertTrue(3== inversions.size());
+        assertEquals(2, inversions.size());
         System.out.println("Inersions :" + inversions);
 
 
