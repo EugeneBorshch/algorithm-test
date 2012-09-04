@@ -1,14 +1,13 @@
-package test.java.com.eugeneborshch.algorithm.sorting;
+package com.eugeneborshch.algorithm.sorting;
 
-import static org.junit.Assert.assertArrayEquals;
-
-import main.java.com.eugeneborshch.algorithm.sorting.Sort;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+
+import static org.junit.Assert.assertArrayEquals;
 
 /**
  * User: EBorshch

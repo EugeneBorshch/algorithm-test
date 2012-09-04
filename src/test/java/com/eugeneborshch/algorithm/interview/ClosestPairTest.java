@@ -1,6 +1,5 @@
-package test.java.com.eugeneborshch.algorithm.interview;
+package com.eugeneborshch.algorithm.interview;
 
-import main.java.com.eugeneborshch.algorithm.interview.ClosestPair;
 import org.junit.Before;
 import org.junit.Test;
 

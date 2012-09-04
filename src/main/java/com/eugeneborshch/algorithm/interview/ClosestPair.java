@@ -1,4 +1,4 @@
-package main.java.com.eugeneborshch.algorithm.interview;
+package com.eugeneborshch.algorithm.interview;
 
 
 import java.util.Arrays;

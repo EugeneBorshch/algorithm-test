@@ -1,13 +1,10 @@
-package test.java.com.eugeneborshch.algorithm.graph;
+package com.eugeneborshch.algorithm.graph;
 
-import com.sun.jdi.IntegerType;
-import main.java.com.eugeneborshch.algorithm.graph.model.Graph;
-import main.java.com.eugeneborshch.algorithm.graph.model.NonDirectedGraph;
-import main.java.com.eugeneborshch.algorithm.graph.model.Vertex;
+import com.eugeneborshch.algorithm.graph.model.NonDirectedGraph;
+import com.eugeneborshch.algorithm.graph.model.Vertex;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -25,7 +22,7 @@ public class MinimalCutTest {
     public void init() {
         graph = new NonDirectedGraph<Integer>();
         InputStream inputStream =
-                getClass().getResourceAsStream("kargerMinCut.txt");
+                getClass().getResourceAsStream("/kargerMinCut.txt");
 
 
         Scanner scanner = new Scanner(inputStream);
@@ -40,7 +37,9 @@ public class MinimalCutTest {
                 Vertex<Integer> dest = new Vertex<Integer>(Integer.valueOf(split[i]));
                 graph.addVertex(source);
                 graph.addVertex(dest);
-                graph.addEdge(source, dest);
+                if (!graph.isEdge(source, dest)) {
+                    graph.addEdge(source, dest);
+                }
             }
         }
         graph.print();

@@ -1,7 +1,4 @@
-package test.java.com.eugeneborshch.algorithm.sorting;
-
-import main.java.com.eugeneborshch.algorithm.sorting.MergeSort;
-import main.java.com.eugeneborshch.algorithm.sorting.Sort;
+package com.eugeneborshch.algorithm.sorting;
 
 /**
  * User: EBorshch

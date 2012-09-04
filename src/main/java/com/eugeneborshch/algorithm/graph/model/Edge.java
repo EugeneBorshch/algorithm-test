@@ -1,4 +1,4 @@
-package main.java.com.eugeneborshch.algorithm.graph.model;
+package com.eugeneborshch.algorithm.graph.model;
 
 /**
  * Edge in Graph
@@ -40,5 +40,12 @@ public class Edge<T> {
         int result = vertex1 != null ? vertex1.hashCode() : 0;
         result = 31 * result + (vertex2 != null ? vertex2.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "E{" + vertex1.getValue() +
+                ", " + vertex2.getValue() +
+                "}";
     }
 }

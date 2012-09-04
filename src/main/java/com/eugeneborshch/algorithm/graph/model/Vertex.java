@@ -1,4 +1,4 @@
-package main.java.com.eugeneborshch.algorithm.graph.model;
+package com.eugeneborshch.algorithm.graph.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +41,10 @@ public class Vertex<T> {
     @Override
     public int hashCode() {
         return value.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "V{" + value + "}";
     }
 }

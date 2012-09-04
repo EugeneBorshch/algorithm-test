@@ -1,4 +1,4 @@
-package main.java.com.eugeneborshch.algorithm.graph.model;
+package com.eugeneborshch.algorithm.graph.model;
 
 import java.util.LinkedHashMap;
 
@@ -42,38 +42,54 @@ public class NonDirectedGraph<T> implements Graph<T> {
             throw new RuntimeException("There is no vertex in graph " + destination);
         }
 
-        Edge<T> edge = new Edge<T>(source, destination);
-        if (!edges.containsKey(edge)) {
+        if (!isEdge(source, destination)) {
+            Edge<T> edge = new Edge<T>(source, destination);
             edges.put(edge, 1);
+            vertexes.get(source).getEdges().add(edge);
+            vertexes.get(destination).getEdges().add(edge);
         } else {
-            edges.put(edge, edges.get(edge) + 1);
-        }
+            //As we have non directed graph V1->V2 is the same as V2->V1
+            Edge<T> edge = new Edge<T>(source, destination);
+            if (edges.get(edge) != null) {
+                edges.put(edge, edges.get(edge) + 1);
+                vertexes.get(source).getEdges().add(edge);
+                vertexes.get(destination).getEdges().add(edge);
+            }
 
-        vertexes.get(source).getEdges().add(edge);
-        vertexes.get(destination).getEdges().add(edge);
+            edge = new Edge<T>(destination, source);
+            if (edges.get(edge) != null) {
+                edges.put(edge, edges.get(edge) + 1);
+                vertexes.get(source).getEdges().add(edge);
+                vertexes.get(destination).getEdges().add(edge);
+            }
+        }
+    }
+
+    @Override
+    public boolean isEdge(Vertex<T> source, Vertex<T> destination) {
+        Edge<T> edge = new Edge<T>(source, destination);
+        Edge<T> opposite = new Edge<T>(destination, source);
+        //As we have non directed graph V1->V2 is the same as V2->V1
+        return edges.containsKey(edge) || edges.containsKey(opposite);
     }
 
     @Override
     public Edge<T> getEdge(Vertex<T> source, Vertex<T> destination) {
         Edge<T> edge = new Edge<T>(source, destination);
-        return edges.containsValue(edge) ? edge : null;
+        Edge<T> opposite = new Edge<T>(source, destination);
+        if (!isEdge(source, destination)) {
+            return null;
+        }
+
+        if (edges.containsKey(edge)) {
+            return edge;
+        } else {
+            return opposite;
+        }
     }
 
     @Override
     public void removeEdge(Vertex<T> source, Vertex<T> destination) {
-        Edge<T> edge = new Edge<T>(source, destination);
-
-        if (!edges.containsKey(edge)) {
-            throw new RuntimeException("There is no edge to delete " + edge);
-        }
-
-        Integer occurences = edges.get(edge);
-        if (occurences == 1) {
-            edges.remove(edge);
-        } else {
-            edges.put(edge, occurences - 1);
-        }
-
         if (!vertexes.containsKey(source)) {
             throw new RuntimeException("There is no vertex in graph " + source);
         }
@@ -82,9 +98,37 @@ public class NonDirectedGraph<T> implements Graph<T> {
             throw new RuntimeException("There is no vertex in graph " + destination);
         }
 
+        Edge<T> edge = new Edge<T>(source, destination);
+        Edge<T> opposite = new Edge<T>(destination, source);
 
-        vertexes.get(source).getEdges().remove(edge);
-        vertexes.get(destination).getEdges().remove(edge);
+        if (!isEdge(source, destination)) {
+            throw new RuntimeException("There is no edge to delete " + edge);
+        }
+
+
+        //As we have non directed graph V1->V2 is the same as V2->V1
+        if (edges.get(edge) != null) {
+            Integer occurences = edges.get(edge);
+            if (occurences == 1) {
+                edges.remove(edge);
+            } else {
+                edges.put(edge, occurences - 1);
+            }
+            vertexes.get(source).getEdges().remove(edge);
+            vertexes.get(destination).getEdges().remove(edge);
+        }
+
+
+        if (edges.get(opposite) != null) {
+            Integer occurences = edges.get(opposite);
+            if (occurences == 1) {
+                edges.remove(opposite);
+            } else {
+                edges.put(opposite, occurences - 1);
+            }
+            vertexes.get(source).getEdges().remove(opposite);
+            vertexes.get(destination).getEdges().remove(opposite);
+        }
     }
 
     @Override
@@ -98,15 +142,12 @@ public class NonDirectedGraph<T> implements Graph<T> {
         String format = "";
         for (Vertex<T> vertex : vertexes.keySet()) {
 
-            format = String.format("%10s", vertex.getValue());
+            format = format + "\n" + String.format("%10s", vertex.getValue());
             for (Edge<T> edge : vertex.getEdges()) {
-                if (!edge.getVertex1().equals(vertex)) {
-                    format = format + String.format("%10s", edge.getVertex1().getValue());
-                } else if (!edge.getVertex2().equals(vertex)) {
+                if (edge.getVertex1().equals(vertex)) {
                     format = format + String.format("%10s", edge.getVertex2().getValue());
                 }
             }
-            format = format +"\n";
         }
         System.out.println(format);
 

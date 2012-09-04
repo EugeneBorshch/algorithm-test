@@ -1,4 +1,4 @@
-package main.java.com.eugeneborshch.algorithm.sorting;
+package com.eugeneborshch.algorithm.sorting;
 
 import java.util.Arrays;
 
