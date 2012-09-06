@@ -1,6 +1,6 @@
 package com.eugeneborshch.algorithm.graph.model;
 
-import java.util.LinkedHashMap;
+import java.util.*;
 
 /**
  * Non directed graph implementation.
@@ -27,12 +27,19 @@ public class NonDirectedGraph<T> implements Graph<T> {
     }
 
     @Override
+    public Vertex<T> getVertex(Vertex<T> tVertex) {
+        return vertexes.get(tVertex);
+    }
+
+    @Override
     public void removeVertex(Vertex<T> vertex) {
         vertexes.remove(vertex);
+
     }
 
     @Override
     public void addEdge(Vertex<T> source, Vertex<T> destination) {
+
 
         if (!vertexes.containsKey(source)) {
             throw new RuntimeException("There is no vertex in graph " + source);
@@ -74,21 +81,6 @@ public class NonDirectedGraph<T> implements Graph<T> {
     }
 
     @Override
-    public Edge<T> getEdge(Vertex<T> source, Vertex<T> destination) {
-        Edge<T> edge = new Edge<T>(source, destination);
-        Edge<T> opposite = new Edge<T>(source, destination);
-        if (!isEdge(source, destination)) {
-            return null;
-        }
-
-        if (edges.containsKey(edge)) {
-            return edge;
-        } else {
-            return opposite;
-        }
-    }
-
-    @Override
     public void removeEdge(Vertex<T> source, Vertex<T> destination) {
         if (!vertexes.containsKey(source)) {
             throw new RuntimeException("There is no vertex in graph " + source);
@@ -116,6 +108,8 @@ public class NonDirectedGraph<T> implements Graph<T> {
             }
             vertexes.get(source).getEdges().remove(edge);
             vertexes.get(destination).getEdges().remove(edge);
+            vertexes.get(source).getEdges().remove(opposite);
+            vertexes.get(destination).getEdges().remove(opposite);
         }
 
 
@@ -128,7 +122,26 @@ public class NonDirectedGraph<T> implements Graph<T> {
             }
             vertexes.get(source).getEdges().remove(opposite);
             vertexes.get(destination).getEdges().remove(opposite);
+            vertexes.get(source).getEdges().remove(edge);
+            vertexes.get(destination).getEdges().remove(edge);
         }
+    }
+
+    @Override
+    public Set<Vertex<T>> getVertices() {
+        return vertexes.keySet();
+    }
+
+    @Override
+    public List<Edge<T>> getEdges() {
+        List<Edge<T>> result = new ArrayList<Edge<T>>();
+        for (Map.Entry<Edge<T>, Integer> edgeEntry : edges.entrySet()) {
+            for (int j = 0; j < edgeEntry.getValue(); j++) {
+                result.add(edgeEntry.getKey());
+            }
+        }
+
+        return result;
     }
 
     @Override
