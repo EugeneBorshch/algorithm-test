@@ -1,6 +1,7 @@
 package com.eugeneborshch.algorithm.graph.model;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public class Vertex<T> {
 
     private T value;
 
-    private List<Edge<T>> edges = new ArrayList<Edge<T>>();
+    protected Collection<Edge<T>> edges = new LinkedList<Edge<T>>();
 
     public Vertex(T value) {
         this.value = value;
@@ -22,7 +23,7 @@ public class Vertex<T> {
         return value;
     }
 
-    public List<Edge<T>> getEdges() {
+    public Collection<Edge<T>> getEdges() {
         return edges;
     }
 
