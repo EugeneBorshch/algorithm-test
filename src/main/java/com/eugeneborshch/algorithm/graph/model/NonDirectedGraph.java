@@ -10,13 +10,13 @@ import java.util.*;
 public class NonDirectedGraph<T> implements Graph<T> {
 
 
-    private LinkedHashMap<Vertex<T>, Vertex<T>> vertexes = new LinkedHashMap<Vertex<T>, Vertex<T>>();
+    protected LinkedHashMap<Vertex<T>, Vertex<T>> vertexes = new LinkedHashMap<Vertex<T>, Vertex<T>>();
 
     /**
      * key - edge between two vertices
      * value - number of edges between same vertices
      */
-    private LinkedHashMap<Edge<T>, Integer> edges = new LinkedHashMap<Edge<T>, Integer>();
+    protected LinkedHashMap<Edge<T>, Integer> edges = new LinkedHashMap<Edge<T>, Integer>();
 
 
     @Override
