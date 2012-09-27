@@ -7,6 +7,9 @@ package com.eugeneborshch.algorithm.graph.model;
 public class WeightedNonDirectedGraphImpl<T> extends NonDirectedGraph<T> {
 
 
+
+
+
     public void addEdge(Vertex<T> source, Vertex<T> destination, Integer weight) {
 
 
@@ -19,20 +22,22 @@ public class WeightedNonDirectedGraphImpl<T> extends NonDirectedGraph<T> {
         }
 
         if (!isEdge(source, destination)) {
-            Edge<T> edge = new Edge<T>(source, destination, weight);
+            Edge<T> edge = new Edge<T>(vertexes.get(source), vertexes.get(destination), weight);
             edges.put(edge, 1);
             vertexes.get(source).getEdges().add(edge);
             vertexes.get(destination).getEdges().add(edge);
         } else {
             //As we have non directed graph V1->V2 is the same as V2->V1
-            Edge<T> edge = new Edge<T>(source, destination, weight);
+            Edge<T> edge = new Edge<T>(vertexes.get(source), vertexes.get(destination), weight);
             if (edges.get(edge) != null) {
                 edges.put(edge, edges.get(edge) + 1);
                 vertexes.get(source).getEdges().add(edge);
                 vertexes.get(destination).getEdges().add(edge);
             }
 
-            edge = new Edge<T>(destination, source, weight);
+
+
+            edge = new Edge<T>(vertexes.get(destination), vertexes.get(source), weight);
             if (edges.get(edge) != null) {
                 edges.put(edge, edges.get(edge) + 1);
                 vertexes.get(source).getEdges().add(edge);

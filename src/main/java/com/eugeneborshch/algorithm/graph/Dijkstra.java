@@ -55,8 +55,14 @@ public class Dijkstra {
                     continue;
                 }
 
-                distance +
+                int newDistance = distance + neighbor.getWeight();
+                if (newDistance < distances.get(neighborVertex)) {
+                    distances.put(neighborVertex, newDistance);
+
+                    unsettledVertices.add(neighborVertex);
+                }
             }
+            processedVertices.add(next);
 
         }
 

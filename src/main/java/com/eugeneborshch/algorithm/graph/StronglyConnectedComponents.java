@@ -8,51 +8,85 @@ import java.util.*;
 
 /**
  * Computing Strongly Connected Components with Kosaraju’s algorithm
- *
+ * <p/>
  * http://scienceblogs.com/goodmath/2007/10/30/computing-strongly-connected-c/
- *
+ * <p/>
  * User: Eugene Borshch
  */
-public class StronglyConnectedComponents {
+public class StronglyConnectedComponents<T> {
 
-    public void getSCC(Graph graph, Graph reversedGraph) {
-        Iterator<Vertex<Integer>> iterator = graph.getVertices().iterator();
-        Stack<Vertex<Integer>> dfsSorting = getDfsSorting(graph, iterator.next());
+   // Stack<Vertex<T>> sorted = new Stack<Vertex<T>>();
+   List<Vertex<T>> sorted = new ArrayList<Vertex<T>>();
+
+    public List<Integer> getSCC(Graph graph, Graph reversedGraph) {
+        List<Integer> result = new ArrayList<Integer>();
 
 
+        System.out.println("Start sorting");
+        Stack<Vertex<T>> dfsSorting = getDfsSorting(graph);
+        System.out.println("End sorting");
+
+
+        Stack<Vertex<T>> stack = new Stack<Vertex<T>>();
+
+        while (!dfsSorting.isEmpty()) {
+            stack.push(reversedGraph.getVertex(dfsSorting.pop()));
+            Set<Vertex<T>> scc = new HashSet<Vertex<T>>();
+
+            while (!stack.isEmpty()) {
+                Vertex<T> vertex = stack.pop();
+                scc.add(vertex);
+
+                for (Edge<T> edge : vertex.getEdges()) {
+                    if (!scc.contains(edge.getVertex2()) && dfsSorting.contains(edge.getVertex2())) {
+                        stack.push(edge.getVertex2());
+                    }
+
+                }
+            }
+
+            //remove all visited nodes
+            dfsSorting.removeAll(scc);
+            result.add(scc.size());
+        }
+        return result;
     }
 
 
-    private  Stack<Vertex<Integer>>  getDfsSorting(Graph graph, Vertex<Integer> root) {
+    private Stack<Vertex<T>> getDfsSorting(Graph graph) {
 
-        Set<Vertex<Integer>> nonVisited = new HashSet<Vertex<Integer>>();
+        Set<Vertex<T>> nonVisited = new HashSet<Vertex<T>>();
         nonVisited.addAll(graph.getVertices());
 
-        Stack<Vertex<Integer>> stack = new Stack<Vertex<Integer>>();
-        Stack<Vertex<Integer>> sorted = new Stack<Vertex<Integer>>();
-        stack.push(root);
+        Stack<Vertex<T>> stack = new Stack<Vertex<T>>();
+        //stack with vertices in order that corresponds to DFS run
 
-        while (!stack.isEmpty()) {
+        while (nonVisited.size() > 0) {
 
-            Vertex<Integer> vertex = stack.pop();
-            nonVisited.remove(vertex);
+            Vertex<T> next = nonVisited.contains(new Vertex("A")) ? graph.getVertex(new Vertex("A")): nonVisited.iterator().next();
+            stack.push(next);
 
-            for(Edge<Integer> edge :vertex.getEdges()){
-                if(nonVisited.contains(edge.getVertex2()))
-                {
-                    stack.push(edge.getVertex2());
+            while (!stack.isEmpty()) {
 
-                    sorted.push(edge.getVertex2());
+                Vertex<T> vertex = stack.pop();
+                nonVisited.remove(vertex);
+                sorted.add(vertex);
+                for (Edge<T> edge : vertex.getEdges()) {
+                    if (nonVisited.contains(edge.getVertex2())) {
+                        stack.push(edge.getVertex2());
+
+
+                    }
+
                 }
-
             }
+            sorted.add(next);
         }
 
-        if(stack.size()!=graph.getVertices().size())
-        {
+        if (sorted.size() != graph.getVertices().size()) {
             throw new RuntimeException("Wrong DFS sorting");
         }
-        return stack;
+        return new Stack<Vertex<T>>();
     }
 
 
